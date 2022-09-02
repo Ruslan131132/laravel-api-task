@@ -23,7 +23,7 @@ class RegisterController extends Controller
 
         if ($user) {
             Auth::login($user);
-            $user->token = Str::random(20);
+            $user->token = Str::random(40);
             $user->save();
             return redirect()->back()->with('success', 'User ' . $user->email . ' successfully registered');
         }

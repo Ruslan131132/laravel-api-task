@@ -20,13 +20,11 @@
                 <li class="nav-item">
                     <a class="nav-link text-muted" aria-current="page" href="#">Home</a>
                 </li>
-
             </ul>
-
         </div>
         <a class="nav-link d-flex">
             @auth
-            {{ Illuminate\Support\Facades\Auth::user()->email }}
+                {{ Illuminate\Support\Facades\Auth::user()->email }}
             @endauth
             @guest
                 Guest
@@ -39,11 +37,25 @@
         <div class="row g-5 px-2 py-4">
             <div class="col-md-4 col-lg-4">
                 <h4 class="mb-3">Api Token</h4>
-                <form>
+                <form method="POST" action="{{ route('token.generate') }}">
                     @csrf
                     <label for="token" class="form-label fw-bolder mt-2">Token</label>
-                    <input type="text" class="form-control" id="token" disabled>
-                    <button type="submit" class="btn btn-light my-2" disabled>Generate</button>
+                    <input type="text" class="form-control" id="token" disabled
+                        @auth
+                            value="{{ \Illuminate\Support\Facades\Auth::user()->token }}"
+                        @endauth
+                    >
+                    @if (Session::has('successToken'))
+                        <div id="successTokenInfo" class="form-text text-success">
+                            {{ Session::get('successToken') }}
+                        </div>
+                    @endif
+                    @if (Session::has('errorToken'))
+                        <div id="successTokenInfo" class="form-text text-danger">
+                            {{ Session::get('errorToken') }}
+                        </div>
+                    @endif
+                    <button type="submit" class="btn btn-light my-2" @guest disabled @endguest>Generate</button>
                 </form>
             </div>
             <div class="col-md-4 col-lg-4">
@@ -54,7 +66,7 @@
                     <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
                     @error('email')
                     @if (Session::has('action') && Session::get('action') == 'register')
-                    <div id="emailHelp" class="form-text text-danger">{{ $message }}</div>
+                        <div id="emailHelp" class="form-text text-danger">{{ $message }}</div>
                     @endif
                     @enderror
                     <label for="password" class="form-label fw-bolder mt-2">Password</label>
@@ -62,7 +74,7 @@
                            aria-describedby="passwordHelp">
                     @error('password')
                     @if (Session::has('action') && Session::get('action') == 'register')
-                    <div id="passwordHelp" class="form-text text-danger">{{ $message }}</div>
+                        <div id="passwordHelp" class="form-text text-danger">{{ $message }}</div>
                     @endif
                     @enderror
                     <label for="passwordConfirmation" class="form-label fw-bolder mt-2">Confirm Password</label>
@@ -70,7 +82,7 @@
                            aria-describedby="passwordConfirmationHelp">
                     @error('passwordConfirmation')
                     @if (Session::has('action') && Session::get('action') == 'register')
-                    <div id="passwordConfirmationHelp" class="form-text text-danger">{{ $message }}</div>
+                        <div id="passwordConfirmationHelp" class="form-text text-danger">{{ $message }}</div>
                     @endif
                     @enderror
                     @if (Session::has('success') && Session::has('action') && Session::get('action') == 'register')
@@ -89,7 +101,7 @@
                     <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
                     @error('email')
                     @if (Session::has('action') && Session::get('action') == 'login')
-                    <div id="emailHelp" class="form-text text-danger">{{ $message }}</div>
+                        <div id="emailHelp" class="form-text text-danger">{{ $message }}</div>
                     @endif
                     @enderror
                     <label for="password" class="form-label fw-bolder mt-2">Password</label>
@@ -97,9 +109,9 @@
                            aria-describedby="passwordHelp">
                     @error('password')
                     @if (Session::has('action') && Session::get('action') == 'login')
-                    <div id="passwordHelp" class="form-text text-danger">{{ $message }}</div>
-                    @enderror
+                        <div id="passwordHelp" class="form-text text-danger">{{ $message }}</div>
                     @endif
+                    @enderror
                     @if (Session::has('success') && Session::has('action') && Session::get('action') == 'login')
                         <div id="loginSuccessInfo" class="form-text text-success">
                             {{ Session::get('success') }}
@@ -107,10 +119,14 @@
                     @endif
                     <div class="row align-items-center">
                         <div class="col-auto">
-                            <button type="submit" class="btn btn-light my-2 mx-0" onclick="this.closest('form').submit();">Log In</button>
+                            <button type="submit" class="btn btn-light my-2 mx-0"
+                                    onclick="this.closest('form').submit();">Log In
+                            </button>
                         </div>
                         <div class="col-auto">
-                            <button type="button" class="btn btn-light my-2" onclick='window.location="{{ route('logout') }}"'>Log Out</button>
+                            <button type="button" class="btn btn-light my-2"
+                                    onclick='window.location="{{ route('logout') }}"'>Log Out
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -118,13 +134,8 @@
         </div>
     </main>
 
-    <footer class="my-5 pt-5 text-muted text-center text-small border-top">
-        <p class="mb-1">© 2022 Ruslan Test</p>
-        <ul class="list-inline">
-            <li class="list-inline-item"><a href="#">Privacy</a></li>
-            <li class="list-inline-item"><a href="#">Terms</a></li>
-            <li class="list-inline-item"><a href="#">Support</a></li>
-        </ul>
+    <footer class="my-5 pt-5 text-muted text-start text-small border-top">
+        <p class="mb-1">© 2022 Ruslan Test Application</p>
     </footer>
 </div>
 
